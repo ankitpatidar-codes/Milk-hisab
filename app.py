@@ -144,7 +144,7 @@ def create_app(config_name=None):
             else:
                 flash('Invalid username or password.', 'danger')
 
-        return render_template('login.html')
+        return render_template('login.html', active_tab='signin')
 
     @app.route('/register', methods=['GET', 'POST'])
     @app.route('/setup', methods=['GET', 'POST'])
@@ -183,7 +183,7 @@ def create_app(config_name=None):
                 flash('Account created successfully! Welcome to Milk Hisab.', 'success')
                 return redirect(url_for('dashboard'))
 
-        return render_template('register.html')
+        return render_template('login.html', active_tab='register')
 
     @app.route('/logout')
     def logout():

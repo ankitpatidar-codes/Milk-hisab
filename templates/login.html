@@ -1,48 +1,108 @@
 {% extends "base.html" %}
-{% block title %}Sign In - Milk Hisab{% endblock %}
+{% block title %}Sign In & Registration - Milk Hisab{% endblock %}
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-11 col-sm-8 col-md-6 col-lg-4">
-        <div class="card shadow-lg border-0">
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
+        <div class="card shadow-lg border-0 rounded-4">
             <div class="card-body p-4 p-md-5">
+                <!-- Logo & Brand Header -->
                 <div class="text-center mb-4">
-                    <i class="bi bi-droplet-fill text-primary" style="font-size: 3rem;"></i>
-                    <h2 class="mt-2 fw-bold">Sign In</h2>
-                    <p class="text-muted">Welcome back to Milk Hisab</p>
+                    <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-2" style="width: 72px; height: 72px;">
+                        <i class="bi bi-droplet-fill" style="font-size: 2.2rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1">Milk Hisab</h2>
+                    <p class="text-muted small">Daily Milk Tracking & Monthly Billing</p>
                 </div>
 
+                <!-- Flash Messages -->
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+                        <div class="alert alert-{{ category }} py-2 text-center small shadow-sm">{{ message }}</div>
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
 
-                <form method="POST" action="{{ url_for('login') }}">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input type="text" class="form-control form-control-lg" id="username" name="username" required autofocus placeholder="Your username">
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input type="password" class="form-control form-control-lg" id="password" name="password" required placeholder="Your password">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="bi bi-box-arrow-in-right"></i> Sign In
-                    </button>
-                </form>
+                <!-- Dual Option Tabs: 1. Sign In | 2. New User Registration -->
+                <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-3" id="authTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if active_tab != 'register' %}active{% endif %} fw-bold py-2" id="signin-tab" data-bs-toggle="pill" data-bs-target="#signin-pane" type="button" role="tab">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if active_tab == 'register' %}active{% endif %} fw-bold py-2" id="register-tab" data-bs-toggle="pill" data-bs-target="#register-pane" type="button" role="tab">
+                            <i class="bi bi-person-plus me-1"></i> New Registration
+                        </button>
+                    </li>
+                </ul>
 
-                <div class="text-center mt-4 pt-2 border-top">
-                    <span class="text-muted">Don't have an account?</span>
-                    <a href="{{ url_for('register') }}" class="fw-bold text-decoration-none ms-1">Sign Up</a>
+                <div class="tab-content" id="authTabsContent">
+                    <!-- OPTION 1: SIGN IN (Puraane Users ke liye) -->
+                    <div class="tab-pane fade {% if active_tab != 'register' %}show active{% endif %}" id="signin-pane" role="tabpanel">
+                        <div class="text-center mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill small">
+                                <i class="bi bi-person-check me-1"></i> Existing User Login
+                            </span>
+                        </div>
+                        <form method="POST" action="{{ url_for('login') }}">
+                            <div class="mb-3">
+                                <label for="login-username" class="form-label fw-semibold small">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control form-control-lg fs-6" id="login-username" name="username" required autofocus placeholder="Enter your username">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="login-password" class="form-label fw-semibold small">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+                                    <input type="password" class="form-control form-control-lg fs-6" id="login-password" name="password" required placeholder="Enter your password">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm fw-bold">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- OPTION 2: REGISTRATION (Naye Users ke liye) -->
+                    <div class="tab-pane fade {% if active_tab == 'register' %}show active{% endif %}" id="register-pane" role="tabpanel">
+                        <div class="text-center mb-3">
+                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill small">
+                                <i class="bi bi-person-plus me-1"></i> Create New Account
+                            </span>
+                        </div>
+                        <form method="POST" action="{{ url_for('register') }}">
+                            <div class="mb-3">
+                                <label for="reg-username" class="form-label fw-semibold small">Choose Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control form-control-lg fs-6" id="reg-username" name="username" required placeholder="Choose unique username">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reg-password" class="form-label fw-semibold small">Create Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
+                                    <input type="password" class="form-control form-control-lg fs-6" id="reg-password" name="password" required placeholder="Minimum 6 characters">
+                                </div>
+                                <div class="form-text small">At least 6 characters</div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="reg-confirm" class="form-label fw-semibold small">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-shield-check"></i></span>
+                                    <input type="password" class="form-control form-control-lg fs-6" id="reg-confirm" name="confirm_password" required placeholder="Re-enter password">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm fw-bold">
+                                <i class="bi bi-person-plus me-1"></i> Register New User
+                            </button>
+                        </form>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
