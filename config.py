@@ -10,7 +10,9 @@ class Config:
 
     @staticmethod
     def get_database_url():
-        url = os.environ.get('DATABASE_URL', 'sqlite:///milk_hisab.db')
+        url = os.environ.get('DATABASE_URL', '').strip().strip('\'"')
+        if not url:
+            url = 'sqlite:///milk_hisab.db'
         # Fix for SQLAlchemy 1.4+ (Render/Railway use postgres://)
         if url.startswith('postgres://'):
             url = url.replace('postgres://', 'postgresql://', 1)

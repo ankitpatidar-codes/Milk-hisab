@@ -26,13 +26,20 @@ def create_app(config_name=None):
     # Set database URI explicitly
     db_url = Config.get_database_url()
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+    }
 
     # Initialize extensions
     db.init_app(app)
 
-    # Create tables
+    # Create tables safely
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            app.logger.warning(f"Initial db.create_all() notice: {e}")
 
     # ---- Auth decorator ----
     def login_required(f):
@@ -466,8 +473,16 @@ def create_app(config_name=None):
     @app.before_request
     def check_setup():
         if request.endpoint not in ('setup', 'login', 'static', 'logout'):
-            if not User.query.first() and request.endpoint != 'setup':
-                return redirect(url_for('setup'))
+            try:
+                if not User.query.first() and request.endpoint != 'setup':
+                    return redirect(url_for('setup'))
+            except Exception as e:
+                try:
+                    db.create_all()
+                    if not User.query.first() and request.endpoint != 'setup':
+                        return redirect(url_for('setup'))
+                except Exception as inner_e:
+                    app.logger.error(f"Error in check_setup: {inner_e}")
 
     return app
 
