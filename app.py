@@ -127,6 +127,9 @@ def create_app(config_name=None):
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
+        if 'user_id' in session:
+            return redirect(url_for('dashboard'))
+
         if request.method == 'POST':
             username = request.form.get('username', '').strip()
             password = request.form.get('password', '')
@@ -143,11 +146,12 @@ def create_app(config_name=None):
 
         return render_template('login.html')
 
+    @app.route('/register', methods=['GET', 'POST'])
     @app.route('/setup', methods=['GET', 'POST'])
-    def setup():
-        """Initial setup - create the first user account."""
-        if User.query.first():
-            return redirect(url_for('login'))
+    def register():
+        """User registration / sign up."""
+        if 'user_id' in session:
+            return redirect(url_for('dashboard'))
 
         if request.method == 'POST':
             username = request.form.get('username', '').strip()
@@ -156,10 +160,12 @@ def create_app(config_name=None):
 
             if not username or not password:
                 flash('Username and password are required.', 'danger')
-            elif password != confirm:
-                flash('Passwords do not match.', 'danger')
             elif len(password) < 6:
                 flash('Password must be at least 6 characters.', 'danger')
+            elif password != confirm:
+                flash('Passwords do not match.', 'danger')
+            elif User.query.filter_by(username=username).first():
+                flash('This username already exists. Please choose a different one.', 'danger')
             else:
                 user = User(username=username)
                 user.set_password(password)
@@ -173,10 +179,11 @@ def create_app(config_name=None):
 
                 session['user_id'] = user.id
                 session['username'] = user.username
-                flash('Account created successfully!', 'success')
+                session.permanent = True
+                flash('Account created successfully! Welcome to Milk Hisab.', 'success')
                 return redirect(url_for('dashboard'))
 
-        return render_template('setup.html')
+        return render_template('register.html')
 
     @app.route('/logout')
     def logout():
@@ -469,20 +476,12 @@ def create_app(config_name=None):
     def inject_now():
         return {'now': datetime.now(timezone.utc)}
 
-    # Redirect to setup if no users exist
+    # Protect routes and ensure login
     @app.before_request
     def check_setup():
-        if request.endpoint not in ('setup', 'login', 'static', 'logout'):
-            try:
-                if not User.query.first() and request.endpoint != 'setup':
-                    return redirect(url_for('setup'))
-            except Exception as e:
-                try:
-                    db.create_all()
-                    if not User.query.first() and request.endpoint != 'setup':
-                        return redirect(url_for('setup'))
-                except Exception as inner_e:
-                    app.logger.error(f"Error in check_setup: {inner_e}")
+        if request.endpoint not in ('register', 'setup', 'login', 'static', 'logout'):
+            if 'user_id' not in session:
+                return redirect(url_for('login'))
 
     return app
 
