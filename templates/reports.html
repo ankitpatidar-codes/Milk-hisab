@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Reports - Milk Hisab{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-file-earmark-bar-graph"></i> Monthly Report</h4>
+    <button class="btn btn-outline-primary" onclick="printReport()">
+        <i class="bi bi-printer"></i> <span class="d-none d-sm-inline">Print / PDF</span>
+    </button>
+</div>
+
+<!-- Month Selector -->
+<div class="card border-0 shadow-sm mb-3 no-print">
+    <div class="card-body p-2 p-md-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-outline-primary btn-sm" id="prevRepMonth">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <h5 class="mb-0 fw-bold" id="reportMonth">Loading...</h5>
+            <button class="btn btn-outline-primary btn-sm" id="nextRepMonth">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Report Content (printable) -->
+<div id="reportContent">
+    <div class="text-center mb-3 print-only" style="display:none;">
+        <h3 class="fw-bold">Milk Hisab - Monthly Report</h3>
+        <h5 id="reportTitle"></h5>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-3">
+        <div class="col-4 col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-2">
+                    <div class="text-primary fw-bold fs-6" id="repQuantity">--</div>
+                    <small class="text-muted" style="font-size:0.7rem">Total Litres</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-2">
+                    <div class="text-success fw-bold fs-6" id="repReceived">--</div>
+                    <small class="text-muted" style="font-size:0.7rem">Days Received</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-2">
+                    <div class="text-danger fw-bold fs-6" id="repMissed">--</div>
+                    <small class="text-muted" style="font-size:0.7rem">Days Missed</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-2">
+                    <div class="text-info fw-bold fs-6" id="repBill">--</div>
+                    <small class="text-muted" style="font-size:0.7rem">Month Bill</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-2">
+                    <div class="text-success fw-bold fs-6" id="repPaid">--</div>
+                    <small class="text-muted" style="font-size:0.7rem">Paid</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 col-md-2">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-2">
+                    <div class="text-danger fw-bold fs-6" id="repPending">--</div>
+                    <small class="text-muted" style="font-size:0.7rem">Pending</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date-wise Records -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">Date-wise Milk Records</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Qty (L)</th>
+                            <th>Rate (&#8377;)</th>
+                            <th>Amount (&#8377;)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportEntries">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Loading...</td></tr>
+                    </tbody>
+                    <tfoot class="table-primary fw-bold" id="reportTotals"></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment History -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">Payment History</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount (&#8377;)</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportPayments">
+                        <tr><td colspan="3" class="text-center text-muted py-3">No payments</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Balance Summary -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">Balance Summary</h6>
+        </div>
+        <div class="card-body">
+            <table class="table table-borderless mb-0">
+                <tr><td>Previous Pending (Carry Forward)</td><td class="text-end fw-bold" id="repCarry">&#8377;0</td></tr>
+                <tr><td>This Month's Bill</td><td class="text-end fw-bold" id="repMonthBill">&#8377;0</td></tr>
+                <tr class="border-top"><td>Total Due</td><td class="text-end fw-bold text-primary" id="repTotalDue">&#8377;0</td></tr>
+                <tr><td>Total Paid</td><td class="text-end fw-bold text-success" id="repTotalPaid">&#8377;0</td></tr>
+                <tr class="border-top"><td><strong>Net Pending Balance</strong></td><td class="text-end fw-bold text-danger fs-5" id="repNetPending">&#8377;0</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    var initialYear = {{ year }};
+    var initialMonth = {{ month }};
+</script>
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+{% endblock %}

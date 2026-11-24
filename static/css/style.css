@@ -1,0 +1,226 @@
+/* ============================================================
+   Milk Hisab - Custom Styles & Theme
+   ============================================================ */
+
+:root {
+    --primary: #0d6efd;
+    --primary-rgb: 13, 110, 253;
+    --success: #198754;
+    --danger: #dc3545;
+    --info: #0dcaf0;
+    --milk-bg: #f4f6f9;
+    --card-radius: 14px;
+}
+
+body {
+    background-color: var(--milk-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #2c3e50;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.nav-link {
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    transition: all 0.15s ease-in-out;
+}
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.18);
+    font-weight: 600;
+}
+
+/* Cards */
+.card {
+    border-radius: var(--card-radius);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.card-header {
+    border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
+    font-weight: 600;
+}
+
+/* Stat Cards */
+.stat-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+.stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+}
+.stat-value {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #1a252f;
+    line-height: 1.2;
+}
+.stat-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.calendar-header {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #6c757d;
+    padding: 6px 2px;
+    text-transform: uppercase;
+}
+.calendar-day {
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s ease-in-out;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    user-select: none;
+}
+.calendar-day:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    z-index: 2;
+}
+.calendar-day .day-number {
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+}
+.calendar-day .day-qty {
+    font-size: 0.7rem;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* Calendar Day States: Green, Red, Grey */
+.calendar-day.received {
+    background-color: #d1e7dd;
+    border: 2px solid var(--success);
+    color: #0f5132;
+}
+.calendar-day.not-received {
+    background-color: #f8d7da;
+    border: 2px solid var(--danger);
+    color: #842029;
+}
+.calendar-day.no-entry {
+    background-color: #e9ecef;
+    border: 2px solid transparent;
+    color: #6c757d;
+}
+.calendar-day.today {
+    box-shadow: 0 0 0 3px var(--primary);
+}
+.calendar-day.empty {
+    cursor: default;
+    background: transparent;
+    border: none;
+}
+.calendar-day.empty:hover {
+    transform: none;
+    box-shadow: none;
+}
+.calendar-day.future {
+    opacity: 0.55;
+}
+
+/* Legend */
+.legend-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* Forms & Modals */
+.modal-content {
+    border-radius: 18px;
+    border: none;
+}
+.modal-header {
+    border-radius: 18px 18px 0 0;
+}
+.btn {
+    border-radius: 9px;
+    font-weight: 500;
+}
+.form-control, .input-group-text {
+    border-radius: 9px;
+}
+
+/* Toast container */
+.toast-container {
+    position: fixed;
+    top: 70px;
+    right: 18px;
+    z-index: 1090;
+}
+
+/* Print Styles */
+@media print {
+    .navbar, .no-print, .btn, .modal, .toast-container {
+        display: none !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .stat-icon {
+        font-size: 1.3rem;
+    }
+    .stat-value {
+        font-size: 1.1rem;
+    }
+    .stat-label {
+        font-size: 0.65rem;
+    }
+    .calendar-day {
+        min-height: 44px;
+        padding: 4px 2px;
+        border-radius: 7px;
+    }
+    .calendar-day .day-number {
+        font-size: 0.85rem;
+    }
+    .calendar-day .day-qty {
+        font-size: 0.6rem;
+    }
+}

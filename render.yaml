@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: milk-hisab
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 2
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: milk-hisab-db
+          property: connectionString
+
+databases:
+  - name: milk-hisab-db
+    plan: free
+    databaseName: milk_hisab
+    user: milkuser

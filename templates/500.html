@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Server Error - Milk Hisab{% endblock %}
+{% block content %}
+<div class="text-center mt-5 py-5">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+    </div>
+    <h1 class="display-3 fw-bold text-danger">500</h1>
+    <h4 class="fw-semibold">Something Went Wrong</h4>
+    <p class="text-muted">An internal error occurred. Please refresh or try again in a moment.</p>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary mt-2">
+        <i class="bi bi-house"></i> Return to Dashboard
+    </a>
+</div>
+{% endblock %}

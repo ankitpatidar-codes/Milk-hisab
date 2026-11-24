@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Settings - Milk Hisab{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-gear"></i> Settings</h4>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">Default Values</h6>
+            </div>
+            <div class="card-body">
+                <form id="settingsForm">
+                    <div class="mb-3">
+                        <label for="defaultRate" class="form-label fw-bold">Default Milk Rate (&#8377; per Litre)</label>
+                        <input type="number" class="form-control form-control-lg" id="defaultRate" step="1" min="0" value="60">
+                    </div>
+                    <div class="mb-3">
+                        <label for="defaultQuantity" class="form-label fw-bold">Default Quantity (Litres)</label>
+                        <input type="number" class="form-control form-control-lg" id="defaultQuantity" step="0.25" min="0" value="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-check-lg"></i> Save Settings
+                    </button>
+                </form>
+                <div id="settingsMsg" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h6 class="mb-0">About</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Milk Hisab</strong> - Personal Milk Tracking App</p>
+                <p class="text-muted">Track your daily milk purchases, manage payments, and generate monthly reports.</p>
+                <hr>
+                <p class="mb-1"><small class="text-muted">Logged in as: <strong>{{ session.get('username', 'User') }}</strong></small></p>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm mt-2">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}
